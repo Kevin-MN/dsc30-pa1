@@ -133,7 +133,6 @@ public class Startup {
                 } else if (!add && !indeces.isEmpty() && indeces.get(0) == l) {
                     add = true;
                 }
-
             }
             result = result.replace(String.valueOf('\u0000'), "");
 
@@ -215,18 +214,79 @@ public class Startup {
         }
     }
 
-
-
-
-
     public static String processTransfer(int amount){
-        /*TODO*/
-        return null;
+
+        int max_transfer = 0;
+        int fees = 0;
+
+        while(amount > 7){
+
+            if(amount > 107){
+                max_transfer += 100;
+                fees += 7;
+                amount -= 107;
+            }else{
+                max_transfer += (amount - 7);
+                fees+= 7;
+                amount -= (amount + 7);
+            }
+
+        }
+
+        return "Max amount: " + max_transfer + ", transaction fee is " +  fees ;
+
     }
 
     public static String decompressString(String input){
-        /*TODO*/
-        return null;
+
+        String result = "";
+
+        if(input.contains(String.valueOf('('))){
+            char[] chars = input.toCharArray();
+            ArrayList<Integer> indeces = new ArrayList<Integer>();
+
+            for (int i = 0; i < input.length(); i++) {
+                if (chars[i] == '(') {
+                    indeces.add(i);
+                    System.out.println(i);
+                }
+            }
+
+            for(int l = 0; l < chars.length;l++){
+                if(!indeces.isEmpty() && l == indeces.get(0)){
+                    for(int p = 1; p < Integer.parseInt(String.valueOf(chars[l+1])); p++){
+                        result = result.concat(String.valueOf(chars[l-1]));   //
+                        System.out.println("Entered inner mult loop");
+                    }
+
+
+                    indeces.remove(0);
+                    l+=2;
+                }
+                else{
+                    result = result.concat(String.valueOf(chars[l]));
+
+                }
+
+
+            }
+
+            return result;
+        }
+        else{
+            return input;
+        }
+
+
+
+
+
+
+
+
+
+
+
     }
 
 
@@ -280,18 +340,65 @@ public class Startup {
     }
 
     public static String summarizeResponse(String[] namesArray, boolean[][] responses){
-        /*TODO*/
-        return null;
+
+        ArrayList<String> names = new ArrayList<String>();
+        int num_symptoms = 0;
+        int total_symptoms = 0;
+
+        int[] symptoms = new int[namesArray.length];
+
+                for(int row = 0; row < responses.length;row++){
+                    for(int col = 0; col < responses[0].length;col++) {
+                        if(responses[row][col] == true){
+                            total_symptoms++;
+                            num_symptoms++;
+                        }
+                    }
+
+                    if(num_symptoms >= 3){
+                        names.add(namesArray[row]);
+                    }
+                    num_symptoms = 0;
+
+                }
+
+            System.out.println(responses.length * responses[0].length);
+
+            int num_sick = names.size();
+                String names_string = "The names are ";
+
+
+                if(num_sick == 1){
+                    names_string = names_string.concat(names.get(0));
+
+                }
+                else {
+                    for (int i = 0; i < names.size(); i++) {
+                        if (i == 0) {
+                            names_string = names_string.concat(names.get(i) + ", ");
+
+                        } else if (i == (names.size() - 1)) {
+                            names_string = names_string.concat(" and " + names.get(i));
+                        } else {
+                            names_string = names_string.concat(names.get(i) + ", ");
+                        }
+
+                    }
+                }
+
+                double max_symptoms = responses.length * responses[0].length;
+                double total_symptoms_double = (double) total_symptoms;
+                double avg_symptoms =  total_symptoms_double /(double) namesArray.length ;
+                System.out.println(avg_symptoms);
+
+        return names.size() + "/" + namesArray.length + " students should stay home.\n" +  names_string + ".\n" +
+                "On this date, the students reported " + String.format("%.1f",avg_symptoms) + " symptoms on average.";
+
     }
 
     public static void main(String[] args) {
 
-        //System.out.println(convertUnits(2,"mile",1));
 
-
-        System.out.println(determineSeat());
-
-        /*
         //Below are the tests for #7. Input files are already transformed into a namesArray and a response array
         //Your task would be to get information from the arrays and summarize the responses in desired format
         //See input text and writeup for more details
@@ -304,7 +411,7 @@ public class Startup {
             System.out.println("__________________________");
             System.out.println(summarizeResponse(namesArray, respArr));
         }
-        */
+
 
     }
 
