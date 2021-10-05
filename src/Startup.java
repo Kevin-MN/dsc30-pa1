@@ -38,64 +38,65 @@ public class Startup {
 
         switch (option) {
             case 1:
-                if (currentUnit == "kg") {
+                if (currentUnit.equals("kg")) {
                     kg = value;
 
                     gram = kg * 1000;
-                    pound = kg * 2.204622621849;
-                    ounce = kg * 35.27396194958;
-                } else if (currentUnit == "gram") {
+                    pound = kg * 2.20462;
+                    ounce = kg * 35.274;
+                } else if (currentUnit.equals("gram")) {
                     gram = value;
 
                     kg = gram * 0.001;
-                    pound = gram * 0.002204622622;
-                    ounce = gram * 0.035273961952;
+                    pound = gram * 0.00220462;
+                    ounce = gram * 0.035274;
 
-                } else if (currentUnit == "pound") {
+                } else if (currentUnit.equals("pounds")) {
                     pound = value;
 
-                    kg = pound * 0.453592370031;
-                    gram = pound * 453.59237003084;
-                    ounce = pound * 16.000000001088;
-                } else if (currentUnit == "ounce") {
+                    kg = pound * 0.453592909;
+                    gram = pound * 453.592909;
+                    ounce = pound * 16.0000363;
+                } else if (currentUnit.equals("ounce")) {
                     ounce = value;
 
-                    kg = ounce * 0.028349523127;
-                    gram = ounce * 28.349523127013;
-                    pound = ounce * 0.062500000004;
+                    kg = ounce * 0.0283494925;
+                    gram = ounce * 28.3494925;
+                    pound = ounce * 0.0624998583;
                 } else {
                     return "Invalid unit";
                 }
 
                 return "kg: " + String.format("%.2f", kg) + "\ngram: " +
-                        String.format("%.2f", gram) + "\npounds: " +
+                        //String.format("%.2f", gram) + "\npounds: " +
+                        String.format("%.2f",gram) + "\npounds: " +
                         String.format("%.2f", pound) + "\nounce: " +
                         String.format("%.2f", ounce);
             case 2:
                 if (currentUnit.equals("meter")) {
                     meter = value;
 
-                    mile = meter * 0.000621371192;
-                    yard = meter * 1.09361329834;
-                    foot = meter * 3.280839895013;
+                    mile = meter * 0.000621372737;
+                    yard = meter * 1.09361602;
+                    foot = meter * 3.28084805;
                 } else if (currentUnit.equals("mile")) {
                     mile = value;
 
-                    meter = mile * 1609.344;
+                    meter = mile * 1609.34;
                     yard = mile * 1760;
                     foot = mile * 5280;
 
                 } else if (currentUnit.equals("yard")) {
                     yard = value;
 
-                    meter = yard * 0.9144;
+                    meter = yard * 0.914397727;
                     mile = yard * 0.000568181818;
                     foot = yard * 3;
 
                 } else if (currentUnit.equals("foot")) {
                     foot = value;
 
-                    meter = foot * 0.3048;
+                    meter = foot * 0.304799242;
                     mile = foot * 0.000189393939;
                     yard = foot * 0.333333333333;
 
@@ -132,7 +133,7 @@ public class Startup {
             }
 
             String result = "";
-            boolean add;
+            boolean add = true;
 
             if (indeces.get(0) == 0) {
                 add = false;
@@ -140,25 +141,25 @@ public class Startup {
                 add = true;
             }
 
-            for (int l = 0; l < input_chars.length; l++) {
-                if (add && !indeces.isEmpty() && indeces.get(0) != l) {
-
-                    result = result.concat(String.valueOf(input_chars[l]));
-                } else if (add && !indeces.isEmpty() && indeces.get(0) == l) {
-                    add = false;
-                    indeces.remove(0);
-                } else if (!add && !indeces.isEmpty() && indeces.get(0) == l) {
-                    add = true;
+                for (int l = 0; l < input_chars.length; l++) {
+                    if(add && indeces.isEmpty()){
+                        result = result.concat(String.valueOf(input_chars[l]));
+                    } else if (add && !indeces.isEmpty() && indeces.get(0) != l) {
+                        result = result.concat(String.valueOf(input_chars[l]));
+                    } else if (add && !indeces.isEmpty() && indeces.get(0) == l) {
+                        add = false;
+                        indeces.remove(0);
+                    } else if (!add && !indeces.isEmpty() && indeces.get(0) == l && l == 0) {
+                        indeces.remove(0);
+                    } else if (!add && !indeces.isEmpty() && indeces.get(0) == l) {
+                        add = true;
+                        indeces.remove(0);
+                    }
                 }
-            }
-
-            return result;
-
-        }
-        else {
+                return result;
+            } else {
             return input;
         }
-
     }
 
     /**
@@ -333,9 +334,12 @@ public class Startup {
                 minutes = (minutes + intervals[i]) % 60;
                 hours++;
 
-                if(hours == 24){
+                if(hours >= 24){
+                    hours = hours%24;
+                }
 
-                    hours = 0;
+                if((intervals[i] / 60) >  1) {
+                    hours += (intervals[i] / 60);
                 }
 
             }
@@ -437,13 +441,57 @@ public class Startup {
                 double avg_symptoms =  total_symptoms_double /(double) namesArray.length ;
 
 
-        return names.size() + "/" + namesArray.length + " students should stay home.\n" +
+        return names.size() + "/" + namesArray.length + " students should stay home. \n" +
                 names_string + ".\n" + "On this date, the students reported " +
                 String.format("%.1f",avg_symptoms) + " symptoms on average.";
 
     }
 
     public static void main(String[] args) {
+
+
+
+
+        /*
+        *       // passed all tests provided in PA1 google doc
+        System.out.println(removeComments("Dear instructors, my name is Harry Potter and I was wondering if masks were required during quidditch *I need to be able to cast a spell during the game*", '*'));
+        System.out.println(removeComments("DSC30, a course that teaches data structure, is essential in understanding the field of computer science", ','));
+        System.out.println(removeComments("First week of class. Super Excited !!!", '('));
+
+        System.out.println(removeComments("Dear instructors, my name is Harry Potter and I was wondering if masks were required during quidditch *I need to be able to cast a spell during the game*", '*'));
+        System.out.println(removeComments("First week of class. Super Excited !!!", '('));
+        System.out.println(removeComments("DSC30, a course that teaches data structure, is essential in understanding the field of computer science", ','));
+
+        System.out.println(convertUnits(1,"gram", 1001));
+        System.out.println(convertUnits(2,"mile", 1));
+        System.out.println(convertUnits(1,"ounce", 50.00));
+
+        int[] interval_1 = {4, 10, 3};
+        int[] interval_2 = {4, 57,60,35};
+        int[] interval_3 = {5, 10, 20,40};
+
+
+        System.out.println(calculateTime("07:00", interval_1));
+        System.out.println(calculateTime("23:57", interval_2));
+        System.out.println(calculateTime("12:55", interval_3));
+
+
+
+        System.out.println(processTransfer(10));
+        System.out.println(processTransfer(108));
+        System.out.println(processTransfer(343));
+
+
+        System.out.println(decompressString("DSC30 is entertainin(4)g, and tutors are pas(2)ionate to help students"));
+        System.out.println(decompressString("HW’s are to(2) hard(6)"));
+        System.out.println(decompressString("Start your hw early and often"));
+           */
+
+
+
+
+
+
 
         //Below are the tests for #7. Input files are already transformed into a
         // namesArray and a response arrayYour task would be to get information
